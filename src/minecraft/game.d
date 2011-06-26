@@ -78,6 +78,7 @@ public:
 		super(args);
 
 		running = true;
+		classic = true;
 
 		parseArgs(args);
 
@@ -397,7 +398,7 @@ protected:
 
 		runner.render(rt);
 
-		if (false) {
+		if (true) {
 			d.target = rt;
 			d.start();
 
