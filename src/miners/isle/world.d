@@ -81,13 +81,16 @@ public:
 					// Get the noise value for this location.
 					auto g = pnoise(xU, yU, zU);
 
-					if(g > .4){
-						if(y < c.height - 1 && ptr[y + 1] == 0){
+					if(y < c.height - 1 && ptr[y + 1] == 0){
+						if(g > .4){
 							ptr[y] = 97;
-						}else{
-							ptr[y] = 2;
+						}
+					}else{
+						if(g > .35){
+							ptr[y] = 98;
 						}
 					}
+
 				}
 			}
 		}

@@ -134,6 +134,7 @@ BlockDescriptor tile[256] = [
 	{ false, NA,        {  0,  0 }, {  0,  0 }, "n/a" },
 	{ false, Stuff,     {  4,  5 }, {  4,  5 }, "trap door" },             // 96
 	{  true, Block,     {  0,  0 }, {  0,  0 }, "solid grass" },
+	{  true, Block,     {  2,  0 }, {  2,  0 }, "solid dirt" },
 ];
 
 BlockDescriptor snowyGrassBlock =
