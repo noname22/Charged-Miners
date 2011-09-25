@@ -8,6 +8,7 @@ import std.stdio;
 import charge.charge;
 
 import charge.math.noise;
+import charge.math.ints;
 
 import miners.world;
 import miners.options;
@@ -16,7 +17,6 @@ import miners.terrain.beta;
 import miners.terrain.chunk;
 import miners.terrain.common;
 import miners.importer.info;
-
 
 /**
  * World containing a infite floating island world.
@@ -66,35 +66,45 @@ public:
 		// Allocte valid data for the chunk
 		c.allocBlocksAndData();
 
+		float cutoff = .4;
+		ubyte topBlock = 97, bottomBlock = 98;
+		int underSideHang = 10;
+
 		// For each block pillar in the chunk.
 		for (int x; x < c.width; x++) {
 			for (int z; z < c.depth; z++) {
 				// Get the pointer to the first block in a pillar.
 				auto ptr = c.getTypePointerUnsafe(x, z);
 
-				for (int y = c.height - 1; y >= 0; y--){
-					// Go from local chunk coords to global scaled coords.
-					auto xU = (x + c.xPos * 16) / 64.0;
-					auto zU = (z + c.zPos * 16) / 64.0;
-					auto yU = (y + c.yPos * 64) / 16.0;
-
+				for (int y = 0; y < c.height; y++){
 					// Get the noise value for this location.
-					auto g = pnoise(xU, yU, zU);
+					bool getSolid(int x, int y, int z, float cutoff=cutoff)
+					{
+						// Go from local chunk coords to global scaled coords.
+						auto xU = (x + c.xPos * 16) / 64.0;
+						auto zU = (z + c.zPos * 16) / 64.0;
+						auto yU = (y + c.yPos * 64) / 8.0;
 
-					if(y < c.height - 1 && ptr[y + 1] == 0){
-						if(g > .4){
-							ptr[y] = 97;
-						}
-					}else{
-						if(g > .35){
-							ptr[y] = 98;
-						}
+						// Get the noise value for this location.
+						return pnoise(xU, yU, zU) > cutoff;
 					}
 
+					ubyte getBlock(int x, int y, int z)
+					{
+						// If the block above is solid, make this one dirt, otherwise make it grass
+						if(getSolid(x, y + 1, z)){
+							return bottomBlock;
+						}
+						return topBlock;
+					}
+
+					if(getSolid(x, y, z)){
+						ptr[y] = getBlock(x, y, z);
+					}
 				}
 			}
 		}
-				
+		
 		c.valid = true;
 		c.loaded = true;
 	}

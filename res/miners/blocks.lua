@@ -131,6 +131,8 @@ local blocks = {
 	BI( false, Stuff,     {  3,  9 }, {  3,  9 }, "redstone repeater on" ),
 	BI( false, NA,        {  0,  0 }, {  0,  0 }, "n/a" ),
 	BI( false, Stuff,     {  4,  5 }, {  4,  5 }, "trap door" ),             -- 96
+	BI(  true, Block,     {  0,  0 }, {  0,  0 }, "solid grass" ),
+	BI(  true, Block,     {  2,  0 }, {  2,  0 }, "solid dirt" ),
 }
 
 function getSolid(num)

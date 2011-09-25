@@ -600,7 +600,12 @@ protected:
 
 			auto t1 = SDL_GetTicks();
 
-			while(w.t.buildOne()) { }
+			int i = 0;
+			while(w.t.buildOne()) {
+				writef(i++, "\r");
+				fflush(stdout);
+			}
+			writefln("");
 
 			auto t2 = SDL_GetTicks();
 
