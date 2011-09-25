@@ -3,6 +3,7 @@
 module miners.isle.world;
 
 import std.math;
+import std.stdio;
 
 import charge.charge;
 
@@ -66,24 +67,28 @@ public:
 		c.allocBlocksAndData();
 
 		// For each block pillar in the chunk.
-		for (int x; x < 16; x++) {
-			for (int z; z < 16; z++) {
+		for (int x; x < c.width; x++) {
+			for (int z; z < c.depth; z++) {
 				// Get the pointer to the first block in a pillar.
 				auto ptr = c.getTypePointerUnsafe(x, z);
 
-				// Go from local chunk coords to global scaled coords.
-				auto xU = (x + c.xPos * 16) / 64.0;
-				auto zU = (z + c.zPos * 16) / 64.0;
+				for (int y = c.height - 1; y >= 0; y--){
+					// Go from local chunk coords to global scaled coords.
+					auto xU = (x + c.xPos * 16) / 64.0;
+					auto zU = (z + c.zPos * 16) / 64.0;
+					auto yU = (y + c.yPos * 64) / 16.0;
 
-				// Get the noise value for this location.
-				auto g = pnoise(xU, 0, zU);
+					// Get the noise value for this location.
+					auto g = pnoise(xU, yU, zU);
 
-				g += 1;
-				g *= 64.0;
-				g += 5;
-
-				for (int y = 64; y > g; y--)
-					ptr[y] = 1;
+					if(g > .4){
+						if(y < c.height - 1 && ptr[y + 1] == 0){
+							ptr[y] = 97;
+						}else{
+							ptr[y] = 2;
+						}
+					}
+				}
 			}
 		}
 				
